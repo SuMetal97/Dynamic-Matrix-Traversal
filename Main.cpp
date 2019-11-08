@@ -3,14 +3,16 @@
 
 using namespace std;
 int MatrixCreate();
-int greatestPath(int SecondRow, int FirstRow, int currRow, int x, int y);
+int greatestPath(int SecondRow, int FirstRow, int currRow, int x, int y, int** matrix);
+int* arr;
 
 int main() {
   int x = MatrixCreate();
+  cout << x;
 }
 
 int MatrixCreate(){
-  int x, y;
+  int x, y, value = 0;
   int given_matrix_itt = 0;
   int SecondRow = 0, FirstRow = 0, currCol = 0;
 
@@ -44,14 +46,30 @@ if (x)
    }
    cout << "\n";
  }
-
-  int answer = greatestPath(SecondRow,FirstRow, currCol, x, y);
-
-
-  return answer;
+arr = new int[y];
+  int answer = greatestPath(SecondRow,FirstRow, currCol, x, y, matrix);
+    return answer;
 }
 
-int greatestPath(int secondrow, int firstrow, int currcol, int x, int y){
-  
-  return 1;
+
+
+int greatestPath(int secondrow, int firstrow, int currcol, int x, int y, int** matrix){
+  arr = 0;
+  int temp = 0;
+
+  if(currcol >= y){
+   return 0;
+ }
+
+  int temp1 = 0, tempmatrix = 0;
+
+  for (int i = 0; i < x; i ++){
+    tempmatrix = matrix[i][currcol];
+    tempmatrix += greatestPath(firstrow, i, currcol+1, x, y, matrix);
+    if(temp1 < tempmatrix){
+      temp1 = tempmatrix;
+    } 
+  }
+ 
+  return temp1;
 }
