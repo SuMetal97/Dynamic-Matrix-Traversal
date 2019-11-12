@@ -9,6 +9,7 @@ int* arr;
 int main() {
   int x = MatrixCreate();
   cout << x;
+  
 }
 
 int MatrixCreate(){
@@ -47,14 +48,21 @@ if (x)
    cout << "\n";
  }
 arr = new int[y];
-  int answer = greatestPath(SecondRow,FirstRow, currCol, x, y, matrix);
+  int answer = greatestPath(0,0, 0, x, y, matrix);
+
+  cout << "\n";
+  for (int i = 0; i <y; i++){
+    cout << arr[i];
+    cout << " ";
+  }
+  cout << "\n";
     return answer;
 }
 
 
 
 int greatestPath(int secondrow, int firstrow, int currcol, int x, int y, int** matrix){
-  arr = 0;
+  
   int temp = 0;
 
   if(currcol >= y){
@@ -64,10 +72,26 @@ int greatestPath(int secondrow, int firstrow, int currcol, int x, int y, int** m
   int temp1 = 0, tempmatrix = 0;
 
   for (int i = 0; i < x; i ++){
-    tempmatrix = matrix[i][currcol];
+  //trying to implement the algorithm to trace penalties here
+   /* if (i < firstrow < secondrow){
+      tempmatrix = (matrix[i][currcol] - ((firstrow - i)*2));
+    }
+    else if (i < secondrow < firstrow){
+      tempmatrix = (matrix[i][currcol] - ((secondrow - i)*2));
+    }
+    else if (firstrow < secondrow < i){
+      tempmatrix = (matrix[i][currcol] - ((i - firstrow)*2));
+    }
+    else if (secondrow < firstrow < i){
+      tempmatrix = (matrix[i][currcol] - ((i - secondrow)*2));
+    }
+    else {*/
+      tempmatrix = matrix[i][currcol];
+    //}
     tempmatrix += greatestPath(firstrow, i, currcol+1, x, y, matrix);
     if(temp1 < tempmatrix){
       temp1 = tempmatrix;
+      arr[currcol] = i;
     } 
   }
  
