@@ -17,7 +17,7 @@ int MatrixCreate(){
   int given_matrix_itt = 0;
   int SecondRow = 0, FirstRow = 0, currCol = 0;
 
-  int it[12] = {2, 3, 4, 1,5, 1, 2, 4,4, 5, 3, 4} ;
+  int it[50] = {6, 1, 9 ,2, 1, 7 ,3, 7, 3, 1,10, 3, 6, 8, 8 ,5, 5, 2, 1, 1,2, 4 ,9 ,2, 1 ,7 ,1, 9, 2, 2,3, 10 ,1, 5, 3, 9, 5, 4, 7, 9,7, 3 ,10, 1, 7, 5, 10, 6 ,5, 6} ;
   cin >> x >> y;
 
   
@@ -65,35 +65,27 @@ int greatestPath(int secondrow, int firstrow, int currcol, int x, int y, int** m
   
   int temp = 0;
 
-  if(currcol >= y){
+  if(currcol == y){
    return 0;
  }
 
   int temp1 = 0, tempmatrix = 0;
 
   for (int i = 0; i < x; i ++){
-  //trying to implement the algorithm to trace penalties here
-   /* if (i < firstrow < secondrow){
-      tempmatrix = (matrix[i][currcol] - ((firstrow - i)*2));
-    }
-    else if (i < secondrow < firstrow){
-      tempmatrix = (matrix[i][currcol] - ((secondrow - i)*2));
-    }
-    else if (firstrow < secondrow < i){
-      tempmatrix = (matrix[i][currcol] - ((i - firstrow)*2));
-    }
-    else if (secondrow < firstrow < i){
-      tempmatrix = (matrix[i][currcol] - ((i - secondrow)*2));
-    }
-    else {*/
+    if(i < secondrow<=firstrow || firstrow <= secondrow < i){
+      tempmatrix = matrix[i][currcol] - abs(2*(i-secondrow));
+    }else if (i < firstrow<= secondrow|| secondrow<= firstrow <i){
+      tempmatrix = matrix[i][currcol] - abs(2*(i-firstrow));
+    }else{
       tempmatrix = matrix[i][currcol];
-    //}
+    }
     tempmatrix += greatestPath(firstrow, i, currcol+1, x, y, matrix);
     if(temp1 < tempmatrix){
       temp1 = tempmatrix;
       arr[currcol] = i;
     } 
   }
+  
  
   return temp1;
 }
