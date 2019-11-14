@@ -2,90 +2,64 @@
 #include <vector>
 
 using namespace std;
-int MatrixCreate();
-int greatestPath(int SecondRow, int FirstRow, int currRow, int x, int y, int** matrix);
-int* arr;
+
+int*** threedmatrix;
+int** givenmatrix;
+void matrixCreate(int x, int y);
+int greatestPath(int row2, int row1,int curcol);
 
 int main() {
-  int x = MatrixCreate();
-  cout << x;
-  
-}
-
-int MatrixCreate(){
-  int x, y, value = 0;
-  int given_matrix_itt = 0;
-  int SecondRow = 0, FirstRow = 0, currCol = 0;
-
-  int it[50] = {6, 1, 9 ,2, 1, 7 ,3, 7, 3, 1,10, 3, 6, 8, 8 ,5, 5, 2, 1, 1,2, 4 ,9 ,2, 1 ,7 ,1, 9, 2, 2,3, 10 ,1, 5, 3, 9, 5, 4, 7, 9,7, 3 ,10, 1, 7, 5, 10, 6 ,5, 6} ;
+  int x, y;
   cin >> x >> y;
-
+  matrixCreate(x,y);
+  
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//allocate space for a 3 d array, then the given 2d array
+void matrixCreate(int x, int y){
   
 
-int** matrix = new int*[x];
-if (x)
-{
-    matrix[0] = new int[x * y];
+  //use size input x and y to make space for the 3d array
+  int ***threedmatrix = new int**[x];
+  for (int i = 0; i < x; ++i) {
+    threedmatrix[i] = new int*[y];
+    for (int j = 0; j < y; ++j)
+      threedmatrix[i][j] = new int[x];
+  }
+
+  //use x and y to make space for the given matrix
+  givenmatrix = new int*[x];
+  if (x)
+  {
+    givenmatrix[0] = new int[x * y];
     for (int i = 1; i < x; ++i)
-        matrix[i] = matrix[0] + i * y;
-}
-
- for(int i = 0; i < x; i++){
-   for (int j = 0; j < y; j++){
-     matrix[i][j] = it[given_matrix_itt];
-     given_matrix_itt++;
-   }
- }
-
- for(int i = 0; i < x; i++){
-   for (int j = 0; j < y; j++){
-     if( i == 0 && j == 0){
-       
-     }
-     cout <<matrix[i][j];
-     cout<< " ";
-   }
-   cout << "\n";
- }
-arr = new int[y];
-  int answer = greatestPath(0,0, 0, x, y, matrix);
-
-  cout << "\n";
-  for (int i = 0; i <y; i++){
-    cout << arr[i];
-    cout << " ";
+        givenmatrix[i] = givenmatrix[0] + i * y;
   }
-  cout << "\n";
-    return answer;
-}
 
-
-
-int greatestPath(int secondrow, int firstrow, int currcol, int x, int y, int** matrix){
-  
-  int temp = 0;
-
-  if(currcol == y){
-   return 0;
- }
-
-  int temp1 = 0, tempmatrix = 0;
-
+  int p = 0;
+  int arr[12] = {2,3,4,1,5,1,2,4,4,5,3,4};
   for (int i = 0; i < x; i ++){
-    if(i < secondrow<=firstrow || firstrow <= secondrow < i){
-      tempmatrix = matrix[i][currcol] - abs(2*(i-secondrow));
-    }else if (i < firstrow<= secondrow|| secondrow<= firstrow <i){
-      tempmatrix = matrix[i][currcol] - abs(2*(i-firstrow));
-    }else{
-      tempmatrix = matrix[i][currcol];
+    for (int j = 0; j < y; j++){
+      givenmatrix[i][j] = arr[p];
+      p++;
     }
-    tempmatrix += greatestPath(firstrow, i, currcol+1, x, y, matrix);
-    if(temp1 < tempmatrix){
-      temp1 = tempmatrix;
-      arr[currcol] = i;
-    } 
   }
-  
- 
-  return temp1;
+  for (int i = 0; i < x; i ++){
+    for (int j = 0; j < y; j++){
+      cout << givenmatrix[i][j];
+      cout << " ";
+    }
+    cout << "\n";
+  }
+
+//
+  int row1 = 0, row2 = 0, tempx=0, tempy=0;
+  for (int i = 0; i < x; i++){
+    row1 = i;
+    threedmatrix[i][tempy][tempx] = (givenmatrix[i][tempy] - (2*row1));
+    cout << threedmatrix[i][tempy][tempx];
+    cout << " ";
+    //greatestPath(x,i,0);
+  }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
