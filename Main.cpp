@@ -90,26 +90,19 @@ int main()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int Penalty(int row, int low, int high)
-{
-  if (low > high)
-  {
-    int temp = high;
-    high = low;
-    low = high;
-  }
-  if (row > high)
-  {
-    return (row - high) * 2;
-  }
-  else if (row < low)
-  {
-    return (low - row) * 2;
-  }
-  else
-  {
+int Penalty (int row, int high, int low) {
+    if (low > high) {
+        int temp = high;
+        high = low;
+        low = temp;
+    }
+    if (row < low) {
+      return (low - row) * 2;
+    }
+    else if (row > high) {
+      return(row - high) * 2;
+    }
     return 0;
-  }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
