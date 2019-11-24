@@ -1,65 +1,159 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
-int*** threedmatrix;
-int** givenmatrix;
-void matrixCreate(int x, int y);
-int greatestPath(int row2, int row1,int curcol);
+int ***keptScores;
+int ***keptRows;
+int **givenmatrix;
 
-int main() {
-  int x, y;
-  cin >> x >> y;
-  matrixCreate(x,y);
-  
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//allocate space for a 3 d array, then the given 2d array
-void matrixCreate(int x, int y){
-  
+int greatestPath(int curcol, int x);
+int Penalty(int row, int rowold, int rownew);
 
-  //use size input x and y to make space for the 3d array
-  int ***threedmatrix = new int**[x];
-  for (int i = 0; i < x; ++i) {
-    threedmatrix[i] = new int*[y];
-    for (int j = 0; j < y; ++j)
-      threedmatrix[i][j] = new int[x];
-  }
 
-  //use x and y to make space for the given matrix
-  givenmatrix = new int*[x];
-  if (x)
+int main()
+{
+  ifstream input_file;  // create input file stream object
+  ofstream output_file; // create output file stream object
+
+  // read input.txt and display matrix, allocate space for the given matrix here
+  int x = 0, y = 0;
+  input_file.open("input.txt");
+  input_file >> x >> y; 
+  givenmatrix = new int *[x];
+  for (int i = 0; i < x; i++)
   {
-    givenmatrix[0] = new int[x * y];
-    for (int i = 1; i < x; ++i)
-        givenmatrix[i] = givenmatrix[0] + i * y;
+    givenmatrix[i] = new int[y];
+  } 
+  while (input_file.is_open())
+  {
+    for (int i = 0; i < x; i++)
+    {
+      for (int j = 0; j < y; j++)
+      {
+        input_file >> givenmatrix[i][j];
+      }
+    }
+    input_file.close();
   }
+  /////////////////////////////////////////////////////////////////////////////////
 
-  int p = 0;
-  int arr[12] = {2,3,4,1,5,1,2,4,4,5,3,4};
-  for (int i = 0; i < x; i ++){
-    for (int j = 0; j < y; j++){
-      givenmatrix[i][j] = arr[p];
-      p++;
+  //allocate space for ramaing data as they are needed in next function call
+  keptScores = new int **[y];
+  for (int i = 0; i < y; i++)
+  {
+    keptScores[i] = new int *[x];
+    for (int j = 0; j < x; j++)
+    {
+      keptScores[i][j] = new int[x];
     }
   }
-  for (int i = 0; i < x; i ++){
-    for (int j = 0; j < y; j++){
-      cout << givenmatrix[i][j];
-      cout << " ";
+  keptRows = new int **[y];
+  for (int i = 0; i < y; i++)
+  {
+    keptRows[i] = new int *[x];
+    for (int j = 0; j < x; j++)
+    {
+      keptRows[i][j] = new int[x];
     }
-    cout << "\n";
   }
+  ///////////////////////////////////////////////////////////////////////////
 
-//
-  int row1 = 0, row2 = 0, tempx=0, tempy=0;
-  for (int i = 0; i < x; i++){
-    row1 = i;
-    threedmatrix[i][tempy][tempx] = (givenmatrix[i][tempy] - (2*row1));
-    cout << threedmatrix[i][tempy][tempx];
-    cout << " ";
-    //greatestPath(x,i,0);
+  //Calculate path and values///////////////////////////////////////////////
+  int finalSum = greatestPath(y, x);
+  /////////////////////////////////////////////////////////////////////////
+
+  //free space for no longer needed data
+  free(givenmatrix);
+  free(keptScores);
+  ////////////////////////////////////////
+  
+  output_file.open("output.txt");
+  output_file << finalSum << "\n";
+  int old = 0, New = 0;
+  for (int i = 0; i < y; i++)
+  {
+
+    output_file << keptRows[i][old][New];
+    output_file << " ";
+    old =New;
+    New = keptRows[i][old][New];
+  }
+  output_file.close();
+  ////////////////////////////////////////////////////////////////////////////
+
+  //free remaing data///////////////////////////////////////////
+  free(keptRows);
+  //////////////////////////////////////////////////////////////
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int Penalty(int row, int low, int high)
+{
+  if (low > high)
+  {
+    int temp = high;
+    high = low;
+    low = high;
+  }
+  if (row > high)
+  {
+    return (row - high) * 2;
+  }
+  else if (row < low)
+  {
+    return (low - row) * 2;
+  }
+  else
+  {
+    return 0;
   }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//Iterate Through the given matrix while dynamically using previous values///////////////////////////////////
+int greatestPath(int curcol, int x)
+{
+  for (int i = curcol - 1; i >= 0; i--)
+  {
+    for (int j = 0; j < x; j++)
+    {
+      for (int k = 0; k < x; k++)
+      {
+        int maxRow = 0;
+        int maxValue = 0;
+        if (i == (curcol - 1))
+        {
+          for (int currentRow = 0; currentRow < x; currentRow++)
+          {
+            int temp = givenmatrix[currentRow][i] - Penalty(currentRow, j, k);
+            if (maxValue < temp)
+            {
+              maxValue = temp;
+              maxRow = currentRow;
+            }
+          }
+        }
+        else
+        {
+          for (int currentRow = 0; currentRow < x; currentRow++)
+          {
+            int temp = givenmatrix[currentRow][i] + keptScores[i + 1][k][currentRow]- Penalty(currentRow, j, k);
+            if (maxValue < temp)
+            {
+              maxValue = temp;
+              maxRow = currentRow;
+            }
+          }
+        }
+        keptScores[i][j][k] = maxValue;
+        keptRows[i][j][k] = maxRow;
+      }
+    }
+  }
+  return keptScores[0][0][0];
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
