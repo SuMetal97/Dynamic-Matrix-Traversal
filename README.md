@@ -5,3 +5,5 @@ input.txt is the file that you put the rows then columns of the matrix in the fi
 output.txt is the answer to the problem
 
 Makefile is for compiling on linux
+
+matrix.cpp is the source code that is used.
